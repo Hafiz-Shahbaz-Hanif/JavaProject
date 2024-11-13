@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+
+<suite name="INSIGHTS LEGACY SMOKE TESTS" thread-count="3">
+    <listeners>
+        <listener class-name="com.DC.utilities.PriorityInterceptorListener"/>
+        <listener class-name="com.DC.utilities.Reporting"/>
+    </listeners>
+
+    <test name="Merchandiser Smoke Test">
+        <classes>
+            <class name="com.DC.uitests.insightslegacy.MerchandiserSmokeTests"/>
+        </classes>
+    </test>
+</suite>

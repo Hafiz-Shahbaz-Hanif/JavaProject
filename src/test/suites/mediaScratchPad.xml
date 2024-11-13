@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+
+<suite name="Media ScratchPad" parallel="tests" thread-count="3">
+    <listeners>
+        <listener class-name="com.DC.utilities.Reporting"/>
+        <listener class-name="com.DC.utilities.CustomEmailableReport"/>
+        <listener class-name="com.DC.utilities.RetryListener"/>
+    </listeners>
+
+    <test name="Media ScratchPad ">
+        <classes>
+            <class name="com.DC.uitests.adc.analyze.mediaScratchPad.MediaScratchPadTests"/>
+        </classes>
+    </test>
+</suite>

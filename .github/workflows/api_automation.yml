@@ -1,0 +1,212 @@
+name: Api Automation WorkFlow
+on:
+  #  schedule:
+  #    - cron: '0 22 * * 3' # runs every Wednesday at 5 pm EST
+  workflow_dispatch:
+    inputs:
+      env:
+        description: 'test environment'
+        required: true
+        default: staging
+      suiteFile:
+        description: 'test suite'
+      #        required: true
+      #        default: admin_services
+      marker:
+        description: 'test type'
+  repository_dispatch:
+    inputs:
+      env:
+        description: 'test environment'
+        required: true
+      suiteFile:
+        description: 'test suite'
+      #        required: true
+      marker:
+        description: 'test type'
+jobs:
+  test:
+    name: Api Automation Run
+    environment: ${{ github.event.inputs.env || 'staging' }} #points to secrets and evns page of repo, default environment is staging,
+    runs-on: [ self-hosted, stg-vpn ]
+    env:
+      suiteFile: ${{ github.event.inputs.suiteFile || 'apiRegression' }}
+      marker: ${{ github.event.inputs.marker || '' }}
+
+    permissions:
+      contents: write
+    steps:
+      - name: Get Code from Repo
+        uses: actions/checkout@v4
+
+      - name: Set Secrets
+        run: |
+          echo "USERNAME=${{ secrets.USERNAME }}" >> env.list
+          echo "PASSWORD=${{ secrets.PASSWORD }}" >> env.list
+
+      - name: Build Docker Image
+        run: docker build -t docker-test-image:${{ github.run_number }} .
+
+      - name: Set Environment Variables
+        run: echo '${{ vars.ENV_VARIABLES }}' | jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' >> env.list
+
+      - name: Inject Variables and Run Tests in Docker Container and Map Directories
+        run: |
+          docker run --name test-container-${{ github.run_number }} --env-file env.list -v ${{ github.workspace }}/allure-results:/usr/src/myapp/allure-results docker-test-image:${{ github.run_number }} /bin/bash -c "mvn clean test -DsuiteFile=${{ env.suiteFile }} -Dgroups=${{ env.marker }}; exit_code=\$?; echo Test exit code: \$exit_code; exit 0"
+
+      - name: Remove Container Created for Testing
+        if: always()
+        run: docker rm -f test-container-${{ github.run_number }}
+
+      - name: Analyze Results and Calculate Pass Percentage # use this step in pytest also. This has logs, explaining failure.
+        run: |
+          total_tests=$(ls allure-results/*result.json | wc -l)
+          if [ "$total_tests" -eq 0 ]; then
+            echo "No tests executed. Check inputs or previuos steps."
+            exit 1
+          else
+            passed_tests=$(jq '.status == "passed"' allure-results/*result.json | grep -c true)
+            pass_percentage=$(echo "$passed_tests * 100 / $total_tests" | bc)
+            echo "pass_percentage=$pass_percentage" >> $GITHUB_ENV
+          fi
+        if: always()
+
+#      - name: Check Test Failures #Uncomment this step to fail pipeline deployment if blocker test fails
+#        run: |
+#          blocker_failures=0
+#          for file in allure-results/*result.json; do
+#            if jq 'select(.labels[] | select(.name == "severity" and .value == "blocker")) | .status' "$file" | grep -qE "failed|broken|skipped|unknown"; then
+#              blocker_failures=$((blocker_failures + 1))
+#            fi
+#          done
+#
+#          if [ "$blocker_failures" -gt 0 ]; then
+#            exit 1
+#          fi
+#        if: always()
+
+
+      - name: Create Allure Environment Properties
+        run: |
+          echo "Test_Environment=${{ github.event.inputs.env }}" | tr '[:lower:]' '[:upper:]' > allure-results/environment.properties
+        if: always()
+
+      - name: Generate Report URL
+        run: |
+          echo "::notice::Report URL: https://friendly-parakeet-63w555e.pages.github.io/${{ github.run_number }}"
+        if: always()
+
+      - name: Get Allure history
+        uses: actions/checkout@v3
+        if: always()
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Allure Report Action
+        uses: simple-elf/allure-report-action@v1.7
+        if: always()
+        with:
+          allure_results: allure-results
+          allure_history: allure-history
+
+      - name: Deploy Report to Github Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v2
+        env:
+          PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUBLISH_BRANCH: gh-pages
+          PUBLISH_DIR: allure-history
+
+      - name: Remove Images Not Used By Docker Containers
+        if: always()
+        run: docker image prune -a -f
+
+      - name: Send Notification to Slack
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          status_mark="${{ job.status == 'success' && '✅' || '❌' }}"
+          curl -X POST -H 'Content-type: application/json' --data '
+                    {
+                    	"blocks": [
+                    		{
+                    			"type": "header",
+                    			"text": {
+                    				"type": "plain_text",
+                    				"text": "Test Result: '${status_mark}'",
+                    				"emoji": true
+                    			}
+                    		},
+                    		{
+                    			"type": "divider"
+                    		},
+                    		{
+                    			"type": "section",
+                    			"fields": [
+                    				{
+                    					"type": "mrkdwn",
+                    					"text": "*Repo:*\n${{ github.repository }}"
+                    				},
+                    				{
+                    					"type": "mrkdwn",
+                    					"text": "*Service:*\n${{ github.event.inputs.suiteFile }}"
+                    				}
+                    			]
+                    		},
+                    		{
+                    			"type": "section",
+                    			"fields": [
+                    				{
+                    					"type": "mrkdwn",
+                    					"text": "*Suite:*\n${{ github.event.inputs.marker }}"
+                    				},
+                    				{
+                    					"type": "mrkdwn",
+                    					"text": "*Environment:*\n${{ github.event.inputs.env }}"
+                    				}
+                    			]
+                    		},
+                    		{
+                    			"type": "section",
+                    			"fields": [
+                    				{
+                    					"type": "mrkdwn",
+                    					"text": "*Branch:*\n${{ github.ref_name }}"
+                    				},
+                    				{
+                    					"type": "mrkdwn",
+                    					"text": "*Tests Passed:*\n${{ env.pass_percentage }}%"
+                    				}
+                    			]
+                    		},
+                    		{
+                    			"type": "section",
+                    			"fields": [
+                    				{
+                    					"type": "mrkdwn",
+                    					"text": "*Executed by:*\n@${{ github.actor }}"
+                    				},
+                    				{
+                    					"type": "mrkdwn",
+                    					"text": "<https://didactic-adventure-wo9q3qr.pages.github.io/${{ github.run_number }}|View Report>"
+                    				}
+                    			]
+                    		}
+                    	]
+                    }' $SLACK_WEBHOOK_URL
+        if: always()
+
+      - name: List Docker Containers
+        run: docker ps -all
+        if: always()
+
+      - name: List Docker Images
+        run: docker images
+        if: always()
+
+      - name: Workspace Clean Up
+        run: |
+          find "${GITHUB_WORKSPACE}" -mindepth 1 -delete
+        if: always()

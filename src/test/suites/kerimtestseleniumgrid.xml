@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+
+<suite name="GRID" parallel="methods" thread-count="4">
+
+	<test name="GRID DOCKER">
+		<classes>
+			<class name="seleniumgrid.docker.GridHubTest" />
+		</classes>
+	</test> 
+
+</suite>

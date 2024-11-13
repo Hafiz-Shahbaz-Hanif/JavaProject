@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+
+<suite name="Fila Next" parallel="tests" thread-count="3">
+    <listeners>
+        <listener class-name="com.FILA.utilities.Reporting" />
+        <listener class-name="com.FILA.utilities.CustomEmailableReport" />
+        <listener class-name="com.FILA.utilities.RetryListener"></listener>
+    </listeners>
+
+    <test name="Fila Next Test">
+        <classes>
+            <class name="com.FILA.testcases.retail.salestrends.salesCorrelation.SalesCorrelationTest" />
+            <class name="com.FILA.testcases.media.MediaExec.MediaExecDashboard" />
+
+        </classes>
+    </test>
+</suite>

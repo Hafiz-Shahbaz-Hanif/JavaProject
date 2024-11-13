@@ -1,0 +1,25 @@
+/target/
+/test-output/
+/log/
+/Screenshots/
+/bin/
+/ssh/
+/downloads/
+debug.log
+/allure-results/
+/FILAv1.iml
+/QAAutomation_FILA - Shortcut.lnk
+/src/test/resources/environment/staging/*.json
+/src/test/resources/environment/development/*.json
+/src/test/resources/environment/qa/*.json
+/src/test/resources/environment/prod/*.json
+/src/test/resources/environment/staging/*-attachment
+/src/test/resources/environment/qa/*-attachment
+/src/test/resources/environment/prod/*-attachment
+/.idea
+/Configuration
+/src/test/resources/environment/local/*.properties
+/src/test/resources/environment/development/*.properties
+/src/test/resources/environment/qa/*.properties
+/src/test/resources/environment/staging/*.properties
+/src/test/resources/environment/prod/*.properties

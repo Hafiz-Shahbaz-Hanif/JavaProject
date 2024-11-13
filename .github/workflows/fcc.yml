@@ -1,0 +1,240 @@
+name: FCC Test WorkFlow
+on:
+  #  schedule:
+  #    - cron: '0 22 * * 3' # runs every Wednesday at 5 pm EST
+  workflow_dispatch:
+    inputs:
+      env:
+        description: 'test environment'
+        required: true
+      suiteFile:
+        description: 'test suite'
+        required: true
+      groups:
+        description: 'test group'
+  repository_dispatch:
+    inputs:
+      env:
+        description: 'test environment'
+        required: true
+      suiteFile:
+        description: 'test suite'
+        required: true
+      groups:
+        description: 'test group'
+jobs:
+  test:
+    name: Regression Run
+    environment: ${{ github.event.inputs.env || 'staging' }} # default environment is staging
+    runs-on: [ self-hosted, stg-vpn ]
+    env:
+      suiteFile: ${{ github.event.inputs.suiteFile || 'regression' }} # default suite is regression
+      groups: ${{ github.event.inputs.groups }}
+    permissions:
+      contents: write
+    steps:
+      - name: Get Code from Repo
+        uses: actions/checkout@v4
+
+      - name: Set Secrets
+        run: |
+          echo "username=${{ secrets.USERNAME }}" >> $GITHUB_ENV
+          echo "password=${{ secrets.PASSWORD }}" >> $GITHUB_ENV
+          echo "dbusername=${{ secrets.DBUSERNAME }}" >> $GITHUB_ENV
+          echo "dbpassword=${{ secrets.DBPASSWORD }}" >> $GITHUB_ENV
+          echo "sshkey=${{ secrets.SSHKEY }}" >> $GITHUB_ENV
+          echo "bearerusername=${{ secrets.BEARERUSERNAME }}" >> $GITHUB_ENV
+          echo "bearerpassword=${{ secrets.BEARERPASSWORD }}" >> $GITHUB_ENV
+          echo "postgresdbusername=${{ secrets.POSTGRESDBUSERNAME }}" >> $GITHUB_ENV
+          echo "postgresdbpassword=${{ secrets.POSTGRESDBPASSWORD }}" >> $GITHUB_ENV
+          echo "redshiftusername=${{ secrets.REDSHIFTUSERNAME }}" >> $GITHUB_ENV
+          echo "redshiftpassword=${{ secrets.REDSHIFTPASSWORD }}" >> $GITHUB_ENV
+          echo "insightsusername=${{ secrets.INSIGHTSUSERNAME }}" >> $GITHUB_ENV
+          echo "insightssupportusername=${{ secrets.INSIGHTSSUPPORTUSERNAME }}" >> $GITHUB_ENV
+          echo "insightspassword=${{ secrets.INSIGHTSPASSWORD }}" >> $GITHUB_ENV
+          echo "basicauthvalue=${{ secrets.BASICAUTHVALUE }}" >> $GITHUB_ENV
+          echo "mongodbusername=${{ secrets.MONGODBUSERNAME }}" >> $GITHUB_ENV
+          echo "mongodbpassword=${{ secrets.MONGODBPASSWORD }}" >> $GITHUB_ENV
+          echo "hubfilausername=${{ secrets.HUBFILAUSERNAME }}" >> $GITHUB_ENV
+          echo "hubfilapassword=${{ secrets.HUBFILAPASSWORD }}" >> $GITHUB_ENV
+          echo "hubfilaonlyusername=${{ secrets.HUBFILAONLYUSERNAME }}" >> $GITHUB_ENV
+          echo "hubfilaonlypassword=${{ secrets.HUBFILAONLYPASSWORD }}" >> $GITHUB_ENV
+          echo "hubfilaqausername=${{ secrets.HUBFILAQAUSERNAME }}" >> $GITHUB_ENV
+          echo "hubfilaqapassword=${{ secrets.HUBFILAQAPASSWORD }}" >> $GITHUB_ENV
+          echo "hubfilaonlyuseroktapassword=${{ secrets.HUBFILAONLYUSEROKTAPASSWORD }}" >> $GITHUB_ENV
+          echo "hubconnectusername=${{ secrets.HUBCONNECTUSERNAME }}" >> $GITHUB_ENV
+          echo "hubconnectpassword=${{ secrets.HUBCONNECTPASSWORD }}" >> $GITHUB_ENV
+          echo "hubconnectuseroktapassword=${{ secrets.HUBCONNECTUSEROKTAPASSWORD }}" >> $GITHUB_ENV
+          echo "hubinsightsusername=${{ secrets.HUBINSIGHTSUSERNAME }}" >> $GITHUB_ENV
+          echo "hubinsightspassword=${{ secrets.HUBINSIGHTSPASSWORD }}" >> $GITHUB_ENV
+          echo "hubedgeonlyusername=${{ secrets.HUBEDGEONLYUSERNAME }}" >> $GITHUB_ENV
+          echo "hubedgeonlypassword=${{ secrets.HUBEDGEONLYPASSWORD }}" >> $GITHUB_ENV
+          echo "hubedgeusername=${{ secrets.HUBEDGEUSERNAME }}" >> $GITHUB_ENV
+          echo "hubedgepassword=${{ secrets.HUBEDGEPASSWORD }}" >> $GITHUB_ENV
+          echo "hubfilainsightsusername=${{ secrets.HUBFILAINSIGHTSUSERNAME }}" >> $GITHUB_ENV
+          echo "hubfilainsightspassword=${{ secrets.HUBFILAINSIGHTSPASSWORD }}" >> $GITHUB_ENV
+          echo "hubinsightsedgeusername=${{ secrets.HUBINSIGHTSEDGEUSERNAME }}" >> $GITHUB_ENV
+          echo "hubinsightsedgepassword=${{ secrets.HUBINSIGHTSEDGEPASSWORD }}" >> $GITHUB_ENV
+          echo "hubfilaedgeusername=${{ secrets.HUBFILAEDGEUSERNAME }}" >> $GITHUB_ENV
+          echo "hubfilaedgepassword=${{ secrets.HUBFILAEDGEPASSWORD }}" >> $GITHUB_ENV
+          echo "hubfilainsightsedgeusername=${{ secrets.HUBFILAINSIGHTSEDGEUSERNAME }}" >> $GITHUB_ENV
+          echo "hubfilainsightsedgepassword=${{ secrets.HUBFILAINSIGHTSEDGEPASSWORD }}" >> $GITHUB_ENV
+          echo "hubinsightssupportusername=${{ secrets.HUBINSIGHTSSUPPORTUSERNAME }}" >> $GITHUB_ENV
+          echo "hubinsightssupportpassword=${{ secrets.HUBINSIGHTSSUPPORTPASSWORD }}" >> $GITHUB_ENV
+          echo "hubedgeexternalusername=${{ secrets.HUBEDGEEXTERNALUSERNAME }}" >> $GITHUB_ENV
+          echo "hubedgeexternaluserpassword=${{ secrets.HUBEDGEEXTERNALUSERPASSWORD }}" >> $GITHUB_ENV
+          echo "hubredisusername=${{ secrets.HUBREDISUSERNAME }}" >> $GITHUB_ENV
+          echo "hubredispassword=${{ secrets.HUBREDISPASSWORD }}" >> $GITHUB_ENV
+          echo "auth0ClientId=${{ secrets.AUTH0CLIENTID }}" >> $GITHUB_ENV
+          echo "snowflakedbusername=${{ secrets.SNOWFLAKEDBUSERNAME }}" >> $GITHUB_ENV
+          echo "snowflakedbpassword=${{ secrets.SNOWFLAKEDBPASSWORD }}" >> $GITHUB_ENV
+          echo "sqlDBusername=${{ secrets.SQLDBUSERNAME }}" >> $GITHUB_ENV
+          echo "sqlDBpassword=${{ secrets.SQLDBPASSWORD }}" >> $GITHUB_ENV
+          echo "sqlDBName=${{ secrets.SQLDBNAME }}" >> $GITHUB_ENV
+
+      - name: Set Environment Variables
+        run: echo '${{ vars.ENV_VARIABLES }}' | jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' >> $GITHUB_ENV
+      #            echo '${{ vars.ENV_VARIABLES }}' | jq -r 'to_entries|map("\(.key|ascii_downcase)=\(.value|tostring)")|.[]' >> $GITHUB_ENV #lowercase keys
+
+      - name: Run Maven Tests
+        run: mvn clean test -DsuiteFile=$suiteFile -Dgroups=$groups
+
+      - name: Calculate Percentage of Tests Passed
+        run: |
+          passed_tests=$(jq '.status == "passed"' allure-results/*result.json | grep -c true)
+          total_tests=$(ls allure-results/*result.json | wc -l)
+          if [ "$total_tests" -gt 0 ]; then
+            pass_percentage=$(echo "$passed_tests * 100 / $total_tests" | bc)
+          else
+            pass_percentage=0
+          fi
+          echo "pass_percentage=$pass_percentage" >> $GITHUB_ENV
+        if: always()
+
+      - name: Create Allure Environment Properties
+        run: |
+          echo "Test_Environment=${{ github.event.inputs.env }}" | tr '[:lower:]' '[:upper:]' > allure-results/environment.properties
+        if: always()
+
+      - name: Load Test Report History
+        uses: actions/checkout@v4
+        if: always()
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Build Test Report
+        uses: simple-elf/allure-report-action@v1.8
+        if: always()
+        id: allure-report
+        with:
+          allure_results: allure-results
+          gh_pages: gh-pages
+          allure_report: allure-report
+          allure_history: allure-history
+
+      - name: Publish Test Report
+        uses: peaceiris/actions-gh-pages@v3
+        if: always()
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-history
+
+      - name: Generate Report URL
+        run: |
+          echo "::notice::Report URL: https://didactic-adventure-wo9q3qr.pages.github.io/${{ github.run_number }}"
+        if: always()
+
+      - name: Remove Images Not Used By Docker Containers
+        if: always()
+        run: docker image prune -a -f
+
+      - name: Send Notification to Slack
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          status_mark="${{ job.status == 'success' && '✅' || '❌' }}"
+          curl -X POST -H 'Content-type: application/json' --data '
+                    {
+                    	"blocks": [
+                    		{
+                    			"type": "header",
+                    			"text": {
+                    				"type": "plain_text",
+                    				"text": "Test Result: '${status_mark}'",
+                    				"emoji": true
+                    			}
+                    		},
+                    		{
+                    			"type": "divider"
+                    		},
+                    		{
+                    			"type": "section",
+                    			"fields": [
+                    				{
+                    					"type": "mrkdwn",
+                    					"text": "*Repo:*\n${{ github.repository }}"
+                    				},
+                    				{
+                    					"type": "mrkdwn",
+                    					"text": "*Service:*\n${{ github.event.inputs.suiteFile }}"
+                    				}
+                    			]
+                    		},
+                    		{
+                    			"type": "section",
+                    			"fields": [
+                    				{
+                    					"type": "mrkdwn",
+                    					"text": "*Suite:*\n${{  github.event.inputs.groups }}"
+                    				},
+                    				{
+                    					"type": "mrkdwn",
+                    					"text": "*Environment:*\n${{ github.event.inputs.env }}"
+                    				}
+                    			]
+                    		},
+                    		{
+                    			"type": "section",
+                    			"fields": [
+                    				{
+                    					"type": "mrkdwn",
+                    					"text": "*Branch:*\n${{ github.ref_name }}"
+                    				},
+                    				{
+                    					"type": "mrkdwn",
+                    					"text": "*Tests Passed:*\n${{ env.pass_percentage }}%"
+                    				}
+                    			]
+                    		},
+                    		{
+                    			"type": "section",
+                    			"fields": [
+                    				{
+                    					"type": "mrkdwn",
+                    					"text": "*Executed by:*\n@${{ github.actor }}"
+                    				},
+                    				{
+                    					"type": "mrkdwn",
+                    					"text": "<https://didactic-adventure-wo9q3qr.pages.github.io/${{ github.run_number }}|View Report>"
+                    				}
+                    			]
+                    		}
+                    	]
+                    }' $SLACK_WEBHOOK_URL
+        if: always()
+
+      - name: List Docker Containers
+        run: docker ps -all
+        if: always()
+
+      - name: List Docker Images
+        run: docker images
+        if: always()
+
+      - name: Workspace Clean Up
+        run: |
+          find "${GITHUB_WORKSPACE}" -mindepth 1 -delete
+        if: always()

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+
+<suite name="Regression" parallel="tests" thread-count="3">
+    <listeners>
+        <listener class-name="com.DC.utilities.PriorityInterceptorListener"/>
+        <listener class-name="com.DC.utilities.Reporting"/>
+    </listeners>
+
+    <suite-files>
+        <suite-file path="analyze.xml"/>
+        <suite-file path="identify.xml"/>
+        <suite-file path="manage.xml"/>
+        <suite-file path="execute.xml"/>
+    </suite-files>
+
+</suite>

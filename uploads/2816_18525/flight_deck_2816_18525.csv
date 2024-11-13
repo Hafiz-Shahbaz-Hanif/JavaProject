@@ -1,0 +1,4 @@
+"SaleMetrics=[clickRevenue + relatedClickRevenue + brandClickRevenue], Attribution=[14], Viewing=[2021-10-17 - 2021-10-23] (DO NOT DELETE)"
+"CampaignName","AdGroupName","Keyword","MatchType","Bid","AdgroupId","State","Spend","Sales","Clicks","ROAS","CPC","CVR","CPA","ROAS GainersAndDrainers","CPC GainersAnDrainers","CVR GainersAnDrainers","CPA GainersAnDrainers","Impressions","Conversions","CTR","SPC","ID","APIID","AdvertiserId"
+SP|01Test|TestAutomation|nb|165593681|7389,DefaultAdGroup,test automate kw,Exact,2.25,752884,paused," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ",I333021,A17868862,C15
+SP|TestAutomationcamp|TestCamp|nb|165593681|4057,DefaultAdGroup,test kw automate,Exact,2.0,557047,paused," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ",I219383,A12466290,C15

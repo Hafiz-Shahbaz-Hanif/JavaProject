@@ -1,0 +1,53 @@
+name: Run JMeter Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      testFiles:
+        description: 'Comma-separated list of JMeter test files'
+        required: true
+        default: 'CITRUS_AD-campaign-Showme_Staging2.jmx,CITRUS_AD-campaign-Showme_Staging3.jmx'
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      files: ${{ steps.set-files.outputs.files }}
+    steps:
+      - name: Set JMeter Test Files
+        id: set-files
+        run: |
+          files=()
+          IFS=',' read -r -a testFiles <<< "${{ github.event.inputs.testFiles || 'CITRUS_AD-campaign-Showme_Staging2.jmx,CITRUS_AD-campaign-Showme_Staging3.jmx' }}"
+          for i in "${!testFiles[@]}"; do
+            dir="staging_$((i+1))"
+            files+=( "{\"name\": \"${testFiles[$i]}\", \"dir\": \"${dir}\"}" )
+          done
+          files_json=$(printf '%s\n' "${files[@]}" | jq -s .)
+          echo "files_json=$files_json"  # Print the JSON to the console
+          echo "files<<EOF" >> $GITHUB_OUTPUT
+          echo "$files_json" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+  run_tests:
+    needs: prepare
+    runs-on: arc-runner-set
+    strategy:
+      matrix:
+        file: ${{ fromJson(needs.prepare.outputs.files) }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create directories for reports
+        run: mkdir -p reports/${{ matrix.file.dir }}
+      - name: Run JMeter Test - ${{ matrix.file.name }}
+        uses: rbhadti94/apache-jmeter-action@v0.5.0
+        with:
+          testFilePath: ${{ matrix.file.name }}
+          outputReportsFolder: reports/${{ matrix.file.dir }}
+          args: '-JSigning=true -JCITRUS_AD-campaign-Showme_Staging=true'
+          plugins: "jpgc-casutg"
+      - name: Upload Report ${{ matrix.file.dir }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: jmeter-test-results-${{ matrix.file.dir }}
+          path: reports/${{ matrix.file.dir }}

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+
+<suite name="MEDIA API TESTS" parallel="tests" thread-count="3">
+    <listeners>
+        <listener class-name="com.DC.utilities.Reporting"/>
+        <listener class-name="com.DC.utilities.RetryListener"/>
+    </listeners>
+
+     <test name="REPORTING DASHBOARD">
+        <classes>
+            <class name="com.DC.apitests.adc.advertising.media.ReportingDashboardApiTest"/>
+        </classes>
+    </test> 
+
+    <test name="FLIGHTDECK">
+        <classes>
+            <class name="com.DC.apitests.adc.advertising.media.FlightdeckApiTests"/>
+        </classes>
+    </test>
+
+</suite>

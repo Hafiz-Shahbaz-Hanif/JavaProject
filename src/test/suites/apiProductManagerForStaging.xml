@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+
+<suite name="PRODUCT MANAGER API TESTS FOR STAGING ENV" thread-count="6">
+    <listeners>
+        <listener class-name="com.DC.utilities.PriorityInterceptorListener"/>
+        <listener class-name="com.DC.utilities.Reporting"/>
+    </listeners>
+
+    <test name="Product API Tests" preserve-order="true" parallel="classes">
+        <classes>
+            <class name="com.DC.apitests.productversioning.products.ProductMasterApiTests"/>
+            <class name="com.DC.apitests.productversioning.products.ProductPropertiesApiTests"/>
+            <class name="com.DC.apitests.productversioning.products.ProductDigitalAssetsApiTests"/>
+            <class name="com.DC.apitests.productversioning.products.ProductAttributesApiTests"/>
+            <class name="com.DC.apitests.productversioning.products.ProductKeywordsApiTests"/>
+            <class name="com.DC.apitests.productversioning.products.ProductMasterStagedApiTests"/>
+        </classes>
+    </test>
+
+    <test name="Open Search API Tests" preserve-order="true" parallel="methods">
+        <classes>
+            <class name="com.DC.apitests.productversioning.products.OpenSearchApiTests"/>
+        </classes>
+    </test>
+
+    <test name="Product Lists API Tests" preserve-order="true" parallel="methods">
+        <classes>
+            <class name="com.DC.apitests.productversioning.products.ProductListsApiTests"/>
+        </classes>
+    </test>
+
+    <test name="Imports Api Tests" preserve-order="true">
+        <classes>
+            <class name="com.DC.apitests.productversioning.imports.ProductPropertiesImportApiTests"/>
+            <class name="com.DC.apitests.productversioning.imports.CompanyPropertiesImportApiTests"/>
+            <class name="com.DC.apitests.productversioning.imports.ProductKeywordsImportApiTests"/>
+        </classes>
+    </test>
+
+    <test name="Exports Api Tests" preserve-order="true" parallel="classes">
+        <classes>
+            <class name="com.DC.apitests.productversioning.exports.ProductAttributesExportApiTests"/>
+            <class name="com.DC.apitests.productversioning.exports.ProductKeywordsExportApiTests"/>
+            <class name="com.DC.apitests.productversioning.exports.ProductDigitalAssetsExportApiTests"/>
+            <class name="com.DC.apitests.productversioning.exports.ProductPropertiesExportApiTests"/>
+            <class name="com.DC.apitests.productversioning.exports.CompanyPropertiesExportApiTests"/>
+        </classes>
+    </test>
+
+    <test name="Task UI API Test" preserve-order="true" parallel="classes">
+        <classes>
+            <class name="com.DC.apitests.productversioning.taskui.TaskUIApiTests"/>
+            <class name="com.DC.apitests.productversioning.taskui.TaskHistoryApiTests"/>
+        </classes>
+    </test>
+</suite>

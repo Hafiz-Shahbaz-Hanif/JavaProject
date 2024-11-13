@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+
+<suite name="PRODUCT VERSIONING POD UI TESTS" thread-count="3">
+    <listeners>
+        <listener class-name="com.DC.utilities.PriorityInterceptorListener"/>
+        <listener class-name="com.DC.utilities.Reporting"/>
+    </listeners>
+
+    <test name="Product Details Page">
+        <classes>
+            <class name="com.DC.uitests.adc.execute.productManager.products.ProductDetailsKeywordsTabUITests"/>
+            <class name="com.DC.uitests.adc.execute.productManager.products.ProductDetailsAttributesTabUITests"/>
+            <class name="com.DC.uitests.adc.execute.productManager.products.ProductDetailsPropertiesTabUITests"/>
+        </classes>
+    </test>
+
+    <test name="Product Properties Bulk Edit">
+        <classes>
+            <class name="com.DC.uitests.adc.execute.productManager.products.ProductBulkEditPropertiesUITests"/>
+        </classes>
+    </test>
+
+    <test name="Product Lists">
+        <classes>
+            <class name="com.DC.uitests.adc.execute.productManager.productLists.ProductListUITests"/>
+        </classes>
+    </test>
+
+    <test name="Company Campaigns">
+        <classes>
+            <class name="com.DC.uitests.adc.execute.productManager.campaign.CampaignPageTest"/>
+        </classes>
+    </test>
+
+    <test name="Product Bulk Edit Keywords">
+        <classes>
+            <class name="com.DC.uitests.adc.execute.productManager.products.ProductBulkEditKeywordsUITests"/>
+        </classes>
+    </test>
+
+    <test name="Product Properties Page">
+        <classes>
+            <class name="com.DC.uitests.adc.execute.productManager.properties.PropertiesPageUITests"/>
+        </classes>
+    </test>
+
+    <test name="Product Bulk Assign Category">
+        <classes>
+            <class name="com.DC.uitests.adc.execute.productManager.products.ProductBulkAssignCategoryUITests"/>
+        </classes>
+    </test>
+
+    <test name="Products Grid">
+        <classes>
+            <class name="com.DC.uitests.adc.execute.productManager.products.ProductsGridExportAndImportUITests"/>
+            <class name="com.DC.uitests.adc.execute.productManager.products.ProductsGridMainPageUITests"/>
+            <class name="com.DC.uitests.adc.execute.productManager.products.ProductsGridLeftSideFilterAndSearchTests"/>
+        </classes>
+    </test>
+
+    <test name="Watchlists Page">
+        <classes>
+            <class name="com.DC.uitests.adc.identify.searchInsights.WatchlistDetailsPageUITests"/>
+        </classes>
+    </test>
+
+    <test name="Task UI Config Mapping Page">
+        <classes>
+            <class name="com.DC.uitests.adc.execute.contentOptimization.TaskUIMappingConfigUITests"/>
+        </classes>
+    </test>
+
+    <test name="Task History Page">
+        <classes>
+            <class name="com.DC.uitests.adc.execute.contentOptimization.TaskHistoryUITests"/>
+        </classes>
+    </test>
+</suite>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+
+<suite name="HUB REGRESSION">
+    <listeners>
+        <!--        <listener class-name="com.FILA.utilities.Reporting" />
+                <listener class-name="com.FILA.utilities.RetryListener"></listener>-->
+    </listeners>
+
+    <suite-files>
+        <suite-file path="apiHub.xml"></suite-file>
+        <suite-file path="uiHub.xml"></suite-file>
+    </suite-files>
+
+</suite>

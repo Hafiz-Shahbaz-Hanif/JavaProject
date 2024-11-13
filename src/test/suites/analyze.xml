@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+
+<suite name="Analyze section UI tests" thread-count="3">
+    <listeners>
+        <listener class-name="com.DC.utilities.PriorityInterceptorListener"/>
+        <listener class-name="com.DC.utilities.Reporting"/>
+    </listeners>
+
+    <test name="Tests for Analyze section">
+        <classes>
+            <class name="com.DC.uitests.adc.analyze.productHealth.PriceTest"/>
+            <class name="com.DC.uitests.adc.analyze.productHealth.AvailabilityTest"/>
+            <class name="com.DC.uitests.adc.analyze.productHealth.SearchFrequencyRankTest"/>
+            <class name="com.DC.uitests.adc.analyze.searchReporting.SearchRankTest"/>
+            <!--<class name="com.DC.uitests.adc.analyze.goalSetting.GoalsHubTest"/>-->
+            <class name="com.DC.uitests.adc.analyze.marketingCloudAnalytics.PathToPurchaseTests"/>
+            <class name="com.DC.uitests.adc.analyze.paidMediaReporting.StreamDashboardTest"/>
+            <class name="com.DC.uitests.adc.analyze.marketingCloudAnalytics.LongTermValueTest"/>
+        </classes>
+    </test>
+</suite>

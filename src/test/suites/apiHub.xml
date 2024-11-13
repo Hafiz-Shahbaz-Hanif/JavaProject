@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+
+<suite name="HUB API">
+
+	<listeners>
+		<!-- 		<listener class-name="com.FILA.utilities.Reporting" />
+         		<listener class-name="com.FILA.utilities.RetryListener"></listener>-->
+	</listeners>
+
+	<test name="AUTH SERVICE">
+		<classes>
+			<class name="com.DC.apitests.hub.authservice.AuthServiceApiTest" />
+		</classes>
+	</test>
+
+	<test name="AGGREGATION SERVICE">
+		<classes>
+			<class name="com.DC.apitests.hub.aggregation.HubAggregationApiTest" />
+		</classes>
+	</test>
+
+	<test name="AUTH0 TOKEN">
+		<classes>
+			<class name="com.DC.apitests.hub.token.Auth0TokenForAdcApiTest" />
+			<class name="com.DC.apitests.hub.token.Auth0TokenForMarketShareApiTest" />
+			<class name="com.DC.apitests.hub.token.Auth0TokenForInsightsApiTest" />
+			<class name="com.DC.apitests.hub.token.Auth0TokenForConnectApiTest" />
+		</classes>
+	</test>
+
+	<test name="EXTERNAL GATEWAY">
+		<classes>
+			<class name="com.DC.apitests.hub.gateways.ExternalGatewayAdcApiTest" />
+			<class name="com.DC.apitests.hub.gateways.ExternalGatewayInsightsApiTest" />
+			<class name="com.DC.apitests.hub.gateways.ExternalGatewayMarketShareApiTest" />
+			<class name="com.DC.apitests.hub.gateways.ExternalGatewayAuthTokenValidationApiTest" />
+			<class name="com.DC.apitests.hub.gateways.InternalGatewaysApiExceptionHandlingTest"/>
+			<class name="com.DC.apitests.hub.gateways.ExternalGatewayConnectApiTest" />
+		</classes>
+	</test>
+
+	<test name="INSIGHTS">
+		<classes>
+			<class name="com.DC.apitests.hub.insights.HubInsightsCpgServerApiTest" />
+			<class name="com.DC.apitests.hub.insights.HubRedisCachingForInsightsUserApiTest" />
+		</classes>
+	</test>
+
+	<test name="ADMIN">
+		<classes>
+			<class name="com.DC.apitests.hub.adc.admin.AdminApiTest" />
+		</classes>
+	</test>
+
+</suite>

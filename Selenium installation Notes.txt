@@ -1,0 +1,51 @@
+Selenium Installation:
+
+Youtube video: https://www.youtube.com/watch?v=pJ8617VmUSU
+
+- Add Java in a System from this site: https://www.oracle.com/in/java/technologies/javase-downloads.html
+- need to install jre jave 8 : Java SE Development kit 8u301
+- After installation run.
+- open cmd and check "java -version"
+- it will install automatically in "C" Java folder.
+- After that need to set the Path variable.
+- Go to C drive programfile and find java->open->bin folder and copy the path.
+- Go to cntrol panel search 'System' open and click on Advance system setting
+- click on Environment variable
+- Nown set "User variable" add the variable name "Java_HOME"and variable value.
+- In variable value field add the same path which i have already copied and just removed '/bin' from last.
+- system variable section u will see the 'Path' click on it and then click on edit.
+- Now click on new button and add %Variable name%\bin and enter ok ok ok vairable name= JAVA_HOME
+- open cmd and check java -version
+
+
+
+Eclipse Download
+- Hit this link: https://www.eclipse.org/downloads/packages/release/oxygen/3a/eclipse-ide-java-ee-developers
+- Click on Windows "x86_64" link
+- After installation run
+
+
+Selenium Download:
+
+- hit this link: https://www.selenium.dev/downloads/
+- Under this section "Selenium Clients and WebDriver Language Bindings" install stable java link by clicking on it.
+- Now scroll the page and click on browser on which browser you want to testing.
+- for example click on chrome documentation link and click on stable link install the same version as your browser have.
+- download the chromedriver32.exe file
+- Now put all downloded material in one folder.
+
+Run Ecplise:
+- open eclipse and click on file and add java project and set the same jre which u have install in your system.
+- "JRE system library" and "SRC" created automatically
+- Now create a package in "SRC"
+- And now create a class in package.
+- write "Webdriver driver = new ChromeDriver();" in our class code you will get an error.
+- Now build path in Our Project and click on configure build path
+- in Library section click on "Add external jars" and add all 7 jars file which we have downloaded.and click on apply
+- Reference folder automatically created.
+- Now import web driver.
+- import chrome driver.
+- Run the code
+- Now getting an error of driver
+- Now write the system.setproperty("webdriver.chromedriver","chromedriver.exe file path"); statment 
+- Now the code will run in chrome.
